@@ -2,14 +2,10 @@
   const fetch = (await import('node-fetch')).default;
   const fs = require('fs').promises;
   const { HttpsProxyAgent } = require('https-proxy-agent');
+  const { SocksProxyAgent } = require('socks-proxy-agent');
   const path = require('path'); 
   const readline = require('readline');
   const crypto = require('crypto'); 
-
-  const rl = readline.createInterface({
-      input: process.stdin,
-      output: process.stdout
-  });
 
   function askQuestion(query) {
       return new Promise((resolve) => rl.question(query, (answer) => resolve(answer)));
@@ -139,11 +135,6 @@
           // Read proxies from proxy.txt
           const proxyList = await fs.readFile('proxy.txt', 'utf-8');
           const proxies = proxyList.split('\n').map(proxy => proxy.trim()).filter(proxy => proxy);
-
-          if (proxies.length === 0) {
-              console.error("No proxies found in proxy.txt");
-              return;
-          }
 
           const tasks = proxies.map(proxy => handleAuthAndPing(proxy));
 
